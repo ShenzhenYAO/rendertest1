@@ -1,3 +1,4 @@
 data/
 documentations/
 venv/
+__pycache__/
