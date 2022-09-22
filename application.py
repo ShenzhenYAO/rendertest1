@@ -1,6 +1,6 @@
 # The file name must by app.py to run this file on render. (this is the default file name for gunicorn app:app). Does not work if the file is application.py and gunicorn app:applcation 
 # the command gunicorn app:appFlask is to look into the default app.py and find the variable appFlask within app.py
-# the command gunicorn 
+# the command gunicorn application:appFlask is to look into application.appFlask and find the variable appFlask within application.py
 
 
 from flask import Flask
