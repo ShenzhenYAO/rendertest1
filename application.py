@@ -7,7 +7,7 @@ from flask import Flask
 
 # print a nice greeting.
 def say_hello(username = "World"):
-    return '<p>Hello2 %s!</p>\n' % username
+    return '<p>Hello3 %s!</p>\n' % username
 
 def get_name():
     return 'The value of __name__ is {}\n'.format(__name__)
@@ -16,7 +16,7 @@ def get_name():
 header_text = '''
     <html>\n<head> <title>Render Flask Test</title> </head>\n<body>'''
 instructions = '''
-    <p><em>Hint</em>: This is a RESTful2 web service! Append a username
+    <p><em>Hint</em>: This is a RESTful3 web service! Append a username
     to the URL (for example: <code>/Thelonious</code>) to say hello to
     someone specific.</p>\n'''
 home_link = '<p><a href="/">Back</a></p>\n'
