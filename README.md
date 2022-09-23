@@ -31,9 +31,9 @@ PS C:\Users\syao2\AppData\Local\MyWorks\js\rendertest1\backend\py> $ venv\Script
 
 5. add data, frontend index.html, js apps, backend py modules (as show in the folder)
 
-6. Make a file 'Procfile' in the project root (i.e., the parent folder of .gitignore) with the following line:
+6. In settings 'Procfile' in the project root (i.e., the parent folder of .gitignore) with the following line:
 ```
-web: gunicorn app:app
+gunicorn --chdir backend/py/test01 __init__:appFlask
 ```
 reference: https://devcenter.heroku.com/articles/procfile#procfile-naming-and-location
 
