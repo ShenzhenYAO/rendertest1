@@ -40,7 +40,7 @@ def get_spacytest_data(requestdatafromfrontend_json):
 
     # use file parent folder instead
     import pathlib
-    parentfolder_thisfile = pathlib.Path(__file__).parent.parent.parent.parent.resolve().__str__() # the parent folder of this file (a diff way to get the parent folder, diff from the above)
+    parentfolder_thisfile = pathlib.Path(__file__).parent.parent.parent.resolve().__str__() # the parent folder of this file (a diff way to get the parent folder, diff from the above)
     projectrootstr = parentfolder_thisfile.replace('\\', '/') 
     print ( 'projectrootstr', projectrootstr  )
 
@@ -80,9 +80,9 @@ def get_some_data(requestdatafromfrontend_json):
     jsonfile=projectrootstr + requestdatafromfrontend_json['requestdatafromfrontend']['location']['somedata_filelocation']
     try:
         openedfile = open(jsonfile, encoding="UTF-8")
-        somedata_dict = json.load(openedfile)
+        somedata_ls = json.load(openedfile)
     except:
-        somedata_dict={}
-    responsedatafrombackend_json = {'responsedatafrombackend':somedata_dict}
+        somedata_ls=[projectrootstr]
+    responsedatafrombackend_json = {'responsedatafrombackend':somedata_ls}
     return responsedatafrombackend_json
 
