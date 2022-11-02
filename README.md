@@ -27,6 +27,9 @@ PS C:\Users\syao2\AppData\Local\MyWorks\js\rendertest1\backend\py> $ venv\Script
 (venv) PS C:\Users\syao2\AppData\Local\MyWorks\js\rendertest1\backend\py> $ pip install spacy
 (venv) PS C:\Users\syao2\AppData\Local\MyWorks\js\rendertest1\backend\py> $ python -m spacy download en_core_web_sm
 
+-cors (allowing visitng sites acrossing domains, -- when visiting the Python API in a different domain)
+(venv) PS C:\Users\syao2\AppData\Local\MyWorks\js\rendertest1\backend\py> $ pip install flask-cors
+
 - also benpar?
 
 (venv) PS C:\Users\syao2\AppData\Local\MyWorks\js\rendertest1\backend\py> $ pip install gunicorn 
