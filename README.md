@@ -27,15 +27,17 @@ PS C:\Users\syao2\AppData\Local\MyWorks\js\rendertest1\backend\py> $ venv\Script
 (venv) PS C:\Users\syao2\AppData\Local\MyWorks\js\rendertest1\backend\py> $ pip install spacy
 (venv) PS C:\Users\syao2\AppData\Local\MyWorks\js\rendertest1\backend\py> $ python -m spacy download en_core_web_sm
 
+- also benpar?
+
 (venv) PS C:\Users\syao2\AppData\Local\MyWorks\js\rendertest1\backend\py> $ pip install gunicorn 
 
 5. add data, frontend index.html, js apps, backend py modules (as show in the folder)
 
-6. In settings 'Procfile' in the project root (i.e., the parent folder of .gitignore) with the following line:
+6. In Start Command, enter the following line:
 ```
 gunicorn --chdir backend/py/test01 __init__:appFlask
 ```
-reference: https://devcenter.heroku.com/articles/procfile#procfile-naming-and-location
+
 
 7. make a requirement.txt (so as to tell render site to load the required packages)
 (venv) PS C:\Users\syao2\AppData\Local\MyWorks\js\rendertest1\backend\py> $ pip freeze > requirements.txt
