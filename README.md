@@ -37,7 +37,11 @@ gunicorn --chdir backend/py/test01 __init__:appFlask
 ```
 reference: https://devcenter.heroku.com/articles/procfile#procfile-naming-and-location
 
-7. make a requirement.txt (so as to tell Heroku to load the required packages)
+7. make a requirement.txt (so as to tell render site to load the required packages)
 (venv) PS C:\Users\syao2\AppData\Local\MyWorks\js\rendertest1\backend\py> $ pip freeze > requirements.txt
 The file is created in /backend/py/ as it is the location where python starts. 
 Move the file to the project root folder. 
+
+visit https://rendertest1.onrender.com (need to wait for a while as it need to be waken up)
+This project only works on line and on VCH machine (in yoga 7 the packages are not installed ...)
+The app is in test01
