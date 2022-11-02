@@ -40,7 +40,7 @@ gunicorn --chdir backend/py/test01 __init__:appFlask
 
 
 7. make a requirement.txt (so as to tell render site to load the required packages)
-(venv) PS C:\Users\syao2\AppData\Local\MyWorks\js\rendertest1\backend\py> $ pip freeze > requirements.txt
+(venv) PS C:\Users\syao2\AppData\Local\MyWorks\js\rendertest1>$ pip freeze > requirements.txt
 The file is created in /backend/py/ as it is the location where python starts. 
 Move the file to the project root folder. 
 

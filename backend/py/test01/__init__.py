@@ -11,6 +11,12 @@ from flask import Flask, render_template, request
 ## Without specifying the path to the folder containing html templates, the line is:
 appFlask = Flask(__name__)
 
+#### solve the CORS problem #######################
+# https://flask-cors.readthedocs.io/en/latest/
+from flask_cors import CORS
+CORS(appFlask)
+#### solve the CORS problem #######################
+
 rootpathstr = appFlask.root_path # string of path to this example (e.g., test01)
 from pathlib import Path
 rootpath = Path(rootpathstr) # convert the path string to a path object
