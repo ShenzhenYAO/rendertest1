@@ -1,5 +1,10 @@
 async function makeEle() {
 
+    // append a div for data (this one is to be hidden...)
+    let datadiv = d3.select('body').append('div')
+        .attrs({'id': 'metadatadiv'})
+        .styles({'display':'none'})
+
     // add a nav bar
     let navbar_d3pn = d3.select('body').append('div')
         .attrs({

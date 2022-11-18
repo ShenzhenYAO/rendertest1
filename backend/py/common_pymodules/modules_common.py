@@ -15,7 +15,7 @@ def makerootlemmas02_combine_text_from_subsections(subsectiontext_ls):
     return text
 #######################################################################
 
-def clean_text(text):
+def clean_text_rendertest1(text):
     import textacy.preprocessing 
     preproc = textacy.preprocessing.make_pipeline(
         textacy.preprocessing.normalize.unicode, # does not seem to work, cannot remove é \t \u2022 \u0027 ...
@@ -26,6 +26,8 @@ def clean_text(text):
     )
     cleanedtext = preproc(text)
     cleanedtext = textacy.preprocessing.normalize.repeating_chars(cleanedtext, chars="*")
+    cleanedtext = textacy.preprocessing.normalize.repeating_chars(cleanedtext, chars=".")
+    cleanedtext = textacy.preprocessing.normalize.repeating_chars(cleanedtext, chars="\n")
     cleanedtext = textacy.preprocessing.replace.emails(cleanedtext, repl="")
     cleanedtext = textacy.preprocessing.replace.urls(cleanedtext, repl="")
     cleanedtext = textacy.preprocessing.replace.phone_numbers(cleanedtext, repl="")

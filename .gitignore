@@ -2,3 +2,4 @@ data/out/
 documentations/
 venv/
 __pycache__/
+testdata/
