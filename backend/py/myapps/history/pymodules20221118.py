@@ -1,4 +1,4 @@
-import pathlib, os,sys, re
+import pathlib, os,sys
 ## To have the parent folder of this file
 # path_thisfile = pathlib.Path(__file__).parent.resolve().__str__() #  pathlib.Path(__file__).parent.resolve() returns a WindowsPath Object, and __str__() is to convert the object to a string
 # segs_ls =  path_thisfile.split('\\')
@@ -30,26 +30,6 @@ sys.path.insert(1, location_commonmodules) # add the location at the top of the 
 from modules_common import *
 # from modules_classification import * # it works as spacy_modules is in the same folder of this py file
 
-######supporting modules###########################################
-
-def minify_list_of_dicts(data_ls): # data_ls like [{k1:, k2:}, {k1:, k2:}]
-    if len(data_ls) == 0:
-        return []
-    tmp_data_keys_ls = list(data_ls[0].keys())
-    tmp_data_keys_ls.sort()
-    minify_data_ls = [tmp_data_keys_ls] #like [ [k1, k2]  ]
-    tmp_data_ls = [] # like [ [dict[k1], dict[k2]], [dict[k1], dict[k2]]  ]
-    for x in data_ls: # like {k1:..., k2:...}
-        tmp_ele_ls=[] # like [dict[k1], dict[k2]]
-        for thiskey in tmp_data_keys_ls:
-            tmp_ele_ls.append(x[thiskey])
-        tmp_data_ls.append(tmp_ele_ls)
-    minify_data_ls += tmp_data_ls # like [   [k1, k2], [dict[k1], dict[k2]], [dict[k1], dict[k2]]    ]
-    return minify_data_ls  # i.e., the first element is a list of keys, the second to n are list of key values
-############def minify_list_of_dicts(data_ls):
-
-
-####################################################
 
 
 # based on test_a02.py in the ml_text project
@@ -112,21 +92,7 @@ def get_processed_textjson(requestdatafromfrontend_json):
 
         if len(entities_ls) != len(selected_entities):
             print("some of the delimiters were deleted during text cleaning ... the program stopped. ")
-            return {
-                "meta":{
-                "source": "",
-                "programs": "~/rendertest1/myapps/pymodules.py"
-                },
-                "data":{
-                    "error": "some of the delimiters were deleted during text cleaning ... the program stopped.",
-                    "text":"",
-                    "article":article,
-                    "entities": entities_ls,
-                    "sentences": [],
-                    "phrases": [],
-                    "word_lemmas_dict":{}
-                }                
-            }
+            x=z+1
         else:
             i=-1
             end2=0
@@ -140,18 +106,20 @@ def get_processed_textjson(requestdatafromfrontend_json):
                 # print(138, '-' + cleaned_text[end2+1:x['start']]+'-', x['entity'])
                 # end2 = x['end']
 
+
         if len(cleaned_text) > 1000000:
             nlp.max_length = len(cleaned_text)
 
+
         # make into sentences, tokens, with token lemma, token pos, token dep, 
-        def get_span_tokens(thespan):
+        def get_span_attrs(thespan):
             # note: all poistions are relative to the text
             # span_tokeni_start = thespan.start
             # span_chari_start = thespan[0].idx 
             tokens_ls = [] 
             for token in thespan:
                 like_word=1
-                if (token.like_num == True) | (token.is_currency == True) | (token.is_quote == True) | (token.is_bracket == True)| (token.is_space == True)| (token.is_punct == True)| (token.is_digit == True):
+                if (token.pos_ == 'DET') | (token.like_num == True) | (token.is_currency == True) | (token.is_quote == True) | (token.is_bracket == True)| (token.is_space == True)| (token.is_punct == True)| (token.is_digit == True):
                     like_word = 0
                 tmp_dict={
                     "lemma": token.lemma_.lower(),
@@ -162,10 +130,10 @@ def get_processed_textjson(requestdatafromfrontend_json):
                     "end": token.idx + len(token.text_with_ws)-1,
                     'like_word':like_word 
                 }
-                tokens_ls.append(tmp_dict)            
-            return tokens_ls
-        ########################################
-
+                tokens_ls.append(tmp_dict)
+            return {
+                "tokens": tokens_ls,
+            }
 
         doc = nlp(cleaned_text)
         all_words_ls =[]
@@ -174,12 +142,8 @@ def get_processed_textjson(requestdatafromfrontend_json):
         # from the text, get a map of distict words and lemmas (e.g., skies => sky)
         for token in doc:
             word = token.text.lower().strip()
-            pattern1= re.compile('[0-9-a-z]', re.IGNORECASE)
-            testword1 = re.sub(pattern1, '', word) # if, after removing digits, -, and letters there are still chars
-            pattern2 = re.compile('[0-9]', re.IGNORECASE)
-            testword2 = re.sub(pattern2, '', word) # if, after removing digits, nothing remains
             lemma = token.lemma_.lower()
-            if (word not in all_words_ls) & (len(testword1)==0) & (len(testword2)>0): # not empty, only letters numbers or -, not only numbers
+            if word not in all_words_ls:
                 all_words_ls.append(word)
                 try:
                     word_lemmas_dict[word].append(lemma)
@@ -191,8 +155,21 @@ def get_processed_textjson(requestdatafromfrontend_json):
         print(75, "making sentences")
         sents_ls=[]
         for sentspan in doc.sents:
-            spantokens_ls = get_span_tokens(sentspan)
-            sents_ls.append(spantokens_ls)
+            # senttext = sent.text
+            # starti = sent.start
+            senttokens_ls = [] 
+            # for token in sent:
+            #     tmp_dict={
+            #         "lemma": token.lemma_.lower(),
+            #         "pos":token.pos_,
+            #         "dep":token.dep_,
+            #         "i": token.i,
+            #         "start": token.idx,
+            #         "end": token.idx + len(token.text_with_ws)-1
+            #     }
+            #     senttokens_ls.append(tmp_dict)
+            spanattrs_dict = get_span_attrs(sentspan)
+            sents_ls.append(spanattrs_dict)
         # print(sents_ls[0])
 
         # phrase_lemmas_ls =[]
@@ -207,33 +184,29 @@ def get_processed_textjson(requestdatafromfrontend_json):
                 if span_range in distinct_spans_ls:
                     continue
                 distinct_spans_ls.append(span_range)
-                tokens_ls = get_span_tokens(thisspan)
-                # print(209, attrs_ls)
+                attrs_dict = get_span_attrs(thisspan)
                 # if thisspan.text == "much less":
                     # print(78, attrs_dict)
                 lemmas_ls =[]
                 token_indices=[]
-                attrs_dict={}
-                for token1 in tokens_ls:
-                    # thislemma=""
+                for token1 in attrs_dict['tokens']:
+                    thislemma=""
                     #!!! why check lemma and words here!!!
                     # try:
                     #     if token1['like_word'] == 1: # if the toke is not digit, number, currency, punct .... 
                     #         thislemma = token1['lemma']
                     # except:
                     #     pass
-                    thislemma= token1['lemma']
-                    pattern1= re.compile('[0-9-a-z]', re.IGNORECASE)
-                    testlemma1 = re.sub(pattern1, '', thislemma) # if, after removing digits, -, and letters there are still chars
-                    pattern2 = re.compile('[0-9]', re.IGNORECASE)
-                    testlemma2 = re.sub(pattern2, '', thislemma) # if, after removing digits, nothing remains
-                    if (len(thislemma)>0) & (len(testlemma1)==0) & (len(testlemma2)>0): # not empty, only letters numbers or -, not only numbers
-                        lemmas_ls.append(token1['lemma'])
+                    thislemma = token1['lemma'] # to replace the above try, now that all lemmas are included, regardless whether it is like a word
+
+                    if (len(thislemma)>0):
+                        lemmas_ls.append(thislemma)
                     
                     token_indices.append(token1['tokeni'])
 
                 # no need to keep words, lemma.. of the tokens as they are in sentence tokens
                 attrs_dict['token_indices'] = token_indices
+                attrs_dict.pop('tokens', None)
 
                 if len(lemmas_ls) < 1: # this is the switch to exclude single word lemma if lemmas_ls len <2
                     continue
@@ -304,57 +277,9 @@ def get_processed_textjson(requestdatafromfrontend_json):
 
 
         phrases_ls = ents_ls + noun_chunks_ls + matchedphrases_ls
-
-        phrases_ls are not unique, need to convert to a dict, combine list of the same key
-
         # print(175, phrases_ls[0])
         # sort by the key lemmas
         phrases_ls =sorted(phrases_ls, key=lambda x: x['lemmas'])  #sorted(phrases_ls, key=lambda k: k['start'])  # do not sort, the key 'start' has been removed
-
-        # phrases_ls  is like [{lemma:"lemma1|lemma2", token_indices:[]}, {}]
-        # it is converted to like [["lemma", "token_indices"], [["lemma1|lemm2", [1,2,3], ["lemma1|lemm2", [1,2,3]]]
-        # i.e., the first element is for key names, the second for data, which is an array with each element as value of the corresponding keys
-        # minify list of dicts
-
-        # minify entities_ls:
-        # entities_ls is like [{entity:, start:, end:}, {}]
-        # change it to like [[entity, start, end],  ["entity1 title", 0, 100],  ["entity2 title", 101, 200]...]
-        minify_entities_ls = minify_list_of_dicts(entities_ls)
-
-        # minify phrases_ls
-        minify_phrases_ls = minify_list_of_dicts(phrases_ls)
-        # o_str = json.dumps(phrases_ls)
-        # print(315, 'original phrase_ls', len(o_str))
-        # m_str = json.dumps(minify_phrases_ls)
-        # print(317, 'minified phrase_ls', len(m_str))
-        # it shows that the minfied is half the length of the original list!
-
-        # minify sents_ls
-        # it is like [[ {start:, end:, lemma:, ...} ], [...]]
-        print(322, sents_ls[0][0]) # the first token of the first sentence
-        # so this one is tricky...
-        # it is not to minify the sentence, rather to minify each sentence
-        # i.e, for one sent, it can be minified as [ [start, end, lemma],  [0, 10, this], ... ]
-        # for the sent ls,yet the keys [start, end, lemma] in each sent will be repeating...
-        # like [  [ [start, end, lemma],  [0, 10, This], ... ], [ [start, end, lemma],  [0, 10, That], ... ]      ]
-        # but it is ok. There won't be a lot sentences in an entity (a journal paper, or a book page/chapter)
-        # further reduce the size by making a [] for the element for keys in sent[1:], 
-        # like [  [ [start, end, lemma],  [0, 10, This], ... ], [ [ <empty instead of repeating the keys start, end, lemma> ],  [0, 10, That], ... ]      ]
-        minify_sents_ls = []
-        i=-1
-        for tokens_thissent_ls in sents_ls:
-            i+=1
-            minify_tokens_thissent_ls = minify_list_of_dicts(tokens_thissent_ls)
-            if i>0:
-                minify_tokens_thissent_ls[0].clear() # [] for the keys element for sent[1:]
-            minify_sents_ls.append(minify_tokens_thissent_ls)
-        o_str = json.dumps(sents_ls)
-        print(315, 'original sents_ls', len(o_str))
-        m_str = json.dumps(minify_sents_ls)
-        print(317, 'minified sents_ls', len(m_str)) # 501644 if all sents has the keys elements (like start, end, lemma, etc), 484364 if only the first sent has keys elements
-    
-        # Note: the word_lemmas_dict cannot be minified. 
-        # a dictionary cannot be minified as it is already in the most reduced form
 
         # phrase_lemmas_ls.sort() # not used though
 
@@ -368,9 +293,9 @@ def get_processed_textjson(requestdatafromfrontend_json):
             "data":{
                 "text":cleaned_text,
                 "article":article,
-                "entities": minify_entities_ls,
-                "sentences": minify_sents_ls,
-                "phrases": minify_phrases_ls,
+                "entities": entities_ls,
+                "sentences": sents_ls,
+                "phrases": phrases_ls,
                 "word_lemmas_dict":word_lemmas_dict
             }
         }

@@ -227,7 +227,7 @@ def make_sent_matched_phrase():
             
             # get all keys (token indices) in matched_tokenindex_themes_phrases_dict
             try:
-                matched_indices = matched_tokenindex_themes_phrases_dict.keys()
+                matched_indices = list(matched_tokenindex_themes_phrases_dict.keys())
                 tmp2_dict = []
                 for matched_index in matched_indices:
                     # in all phrases that matches a token index, find those matching the current token index

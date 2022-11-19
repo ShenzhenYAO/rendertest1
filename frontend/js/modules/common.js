@@ -135,10 +135,11 @@ async function get_some_data() {
 async function get_processed_textjson() {
 
     // get the text json to be processed
-    let srctextjsonloaction = 'static/testdata/epub_to_json/19423324.json' // 'static/testdata/epub_to_json/ferguson_war.json'
+
+    let srctextjsonloaction = 'static/testdata/epub_to_json/25091704.json' //'static/testdata/epub_to_json/19423324.json' // 'static/testdata/epub_to_json/ferguson_war.json'
     let urlgznocache = srctextjsonloaction + '?v=' + new Date().getTime()
     let srcentities_arr = await d3.json(urlgznocache).then(d=>{return d}) // like [{entity1:..., text: "..." }, {entity2:..., }]
-    let articlename = "19423324" //"ferguson_war"
+    let articlename = "25091704" //"ferguson_war"
     let json_fromfront = {article: articlename, entities: srcentities_arr}
     // console.log(srctexts_arr)
 

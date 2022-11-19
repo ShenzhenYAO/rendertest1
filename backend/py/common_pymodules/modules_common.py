@@ -302,7 +302,7 @@ def update_evaluated_nolink_rootlemmas(evaluated_rootlemmasfiles, themes_linked_
     openedfile = open(themes_linked_rootlemmasfile, encoding="UTF-8")
     themes_linked_rootlemmas_dict = json.load(openedfile)['data']['themes_linked_rootlemmas']
 
-    linke_rootlemmas_ls = themes_linked_rootlemmas_dict.keys() # have a list of rootlemmas (keys) that have at least one linked theme
+    linke_rootlemmas_ls = list(themes_linked_rootlemmas_dict.keys()) # have a list of rootlemmas (keys) that have at least one linked theme
     
     evaluated_nolink_rootlemmas_ls=[]
     for x in evaluated_rootlemmas_ls: # x like rootlemma:[theme1, theme2...]
@@ -319,7 +319,7 @@ def update_01_lemma_themes_dict(requestedchange_dict, lemma_themes_dictfile):
     openedfile = open(lemma_themes_dictfile, encoding="UTF-8")
     lemmas_themes_dict = json.load(openedfile) # like {'house': ['housing', '...']}
 
-    themes_ls = requestedchange_dict.keys()
+    themes_ls = list(requestedchange_dict.keys())
     for theme in themes_ls:
         #get the words indeed are lemmas
         try:
@@ -355,7 +355,7 @@ def update_evaluated_rootlemmas(themes_linked_rootlemmasfile, evaluated_rootlemm
     import json
     openedfile = open(themes_linked_rootlemmasfile, encoding="UTF-8")
     themes_linked_rootlemmas_dict = json.load(openedfile)['data']['themes_linked_rootlemmas']
-    themes_linked_rootlemmas_ls = themes_linked_rootlemmas_dict.keys() # get a list of rootlemmas that has been linked to themes (in which some are newly added in the above step)
+    themes_linked_rootlemmas_ls = list(themes_linked_rootlemmas_dict.keys()) # get a list of rootlemmas that has been linked to themes (in which some are newly added in the above step)
 
     # open the existing evaluated_rootlemmas.json
     openedfile = open(evaluated_rootlemmasfile, encoding="UTF-8")
@@ -423,7 +423,7 @@ def update_lemmas_in_02_themes_lemmas_phrases_changing(existing_02_themes_lemmas
 
     openedfile = open(themes_linked_rootlemmasfile, encoding="UTF-8")
     themes_linked_rootlemmas_dict = json.load(openedfile)['data']['themes_linked_rootlemmas']
-    lemmas_ls = themes_linked_rootlemmas_dict.keys()
+    lemmas_ls = list(themes_linked_rootlemmas_dict.keys())
     for lemma in lemmas_ls:
         themes_ls = themes_linked_rootlemmas_dict[lemma]
         for theme in themes_ls:
@@ -457,7 +457,7 @@ def get_theme_related_phrases_from_newtext(text, existing_themes_lemmas_phrasesf
     
     # get all phrases in existing_themes_lemmas_dict regardless of theme category
     interested_phrases_ls =[]
-    themes_ls = existing_themes_lemmas_dict.keys()
+    themes_ls = list(existing_themes_lemmas_dict.keys())
     for theme in themes_ls:
         phrases_ls = existing_themes_lemmas_dict[theme]['phrases']
         for phrase in phrases_ls:
@@ -501,7 +501,7 @@ def merge_phrases_to_evaluate(unevaluated_phrasesfile, existing_themes_lemmas_ph
 
     merged_themes_phrases_dict ={}
 
-    themes_ls = existing_themes_lemmas_dict.keys()
+    themes_ls = list(existing_themes_lemmas_dict.keys())
 
     for theme in themes_ls:
         merged_themes_phrases_dict[theme] ={}
@@ -528,7 +528,7 @@ def update_02_themes_lemmas_phrases_changing(existing_02_themes_lemmas_phrases_c
     openedfile = open(evaluated_phrases_tmpfile, encoding="UTF-8")
     evaluated_phrases_tmp_dict = json.load(openedfile)['data']['phrases_to_evaluate']
 
-    themes_ls = evaluated_phrases_tmp_dict.keys()
+    themes_ls = list(evaluated_phrases_tmp_dict.keys())
     for theme in themes_ls:
         themes_lemmas_phrases_dict[theme]['phrases'] = evaluated_phrases_tmp_dict[theme]['phrases'] # completely overwrite the existing phrases with the newly evaluated phrases
 
@@ -545,7 +545,7 @@ def update_unevaluated_phrases(unevaluated_phrasesfile, themes_linked_lemmas_phr
     openedfile = open(themes_linked_lemmas_phrasesfile, encoding="UTF-8")
     themes_lemmas_phrases_dict = json.load(openedfile)['data']['themes_lemmas_phrases']
 
-    themes_ls = themes_lemmas_phrases_dict.keys()
+    themes_ls = list(themes_lemmas_phrases_dict.keys())
     for theme in themes_ls:
         try:
             unevaluated_phrases_ls = unevaluated_phrases_dict[theme]['phrases']
