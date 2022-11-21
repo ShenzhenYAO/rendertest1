@@ -1,4 +1,4 @@
-import pathlib, os,sys, re
+import pathlib, os,sys, re, gzip
 ## To have the parent folder of this file
 # path_thisfile = pathlib.Path(__file__).parent.resolve().__str__() #  pathlib.Path(__file__).parent.resolve() returns a WindowsPath Object, and __str__() is to convert the object to a string
 # segs_ls =  path_thisfile.split('\\')
@@ -24,6 +24,7 @@ path_projectroot_str = get_project_root_path()
 print(path_projectroot_str)
 location_commonmodules = path_projectroot_str + '/backend/py/common_pymodules'
 sys.path.insert(1, location_commonmodules) # add the location at the top of the sys.path, thus, by default, the py script file spacy_modules will be loaded from there
+
 
 # from modules_testing import * # it works as spacy_modules is in the same folder of this py file
 # from modules_spacy import * # do not name the py file like spacy.py (it'll be confused with the package spacy)
@@ -64,6 +65,7 @@ def get_processed_textjson(requestdatafromfrontend_json):
     max_length_per_cut= 100 # if the big text is bigger then 100, force to split into several texts, each either <= 100 of length or is at least the length of an entity text (whichever is larger)
 
     requestjson=requestdatafromfrontend_json # like {requesttask: ..., requestdatafromfrontend:{article..., entities:[{entity1:..., text:...}]}}}
+    targetlocation = requestjson['targetlocation']
     data_frontend = requestjson['requestdatafromfrontend']
     article = data_frontend['article']
     entities_ls= data_frontend['entities'] # like [{entity1:..., text:...}]
@@ -121,10 +123,11 @@ def get_processed_textjson(requestdatafromfrontend_json):
                     "error": "some of the delimiters were deleted during text cleaning ... the program stopped.",
                     "text":"",
                     "article":article,
-                    "entities": entities_ls,
+                    "min_entities": [],
                     "sentences": [],
                     "phrases": [],
-                    "word_lemmas_dict":{}
+                    "word_lemmas_dict":{},
+                    "section":""
                 }                
             }
         else:
@@ -136,7 +139,7 @@ def get_processed_textjson(requestdatafromfrontend_json):
                 try:
                     x['section'] = selected_entities[i]['section']
                 except:
-                    pass
+                    x['section'] = ""
                 # print(138, '-' + cleaned_text[end2+1:x['start']]+'-', x['entity'])
                 # end2 = x['end']
 
@@ -303,16 +306,49 @@ def get_processed_textjson(requestdatafromfrontend_json):
         # print(170, len(phrase_lemmas_ls))
 
 
-        phrases_ls = ents_ls + noun_chunks_ls + matchedphrases_ls
+        phrases_ls = ents_ls + noun_chunks_ls + matchedphrases_ls # [{lemmas: lemma1|lemma2, token_indices:[1, 2, 3...]}, {}]
+        print(307, "length of phrases_ls", len(phrases_ls))
 
-        phrases_ls are not unique, need to convert to a dict, combine list of the same key
+        # in phrases_ls, the smae lemmas key may appear for multiple times, the following is to merge tokeni of the same lemmaskey
+        # wrong! do not merge it! although the lemmas key may repeat, it reflects tokens in different sentences, 
+        # e.g., [{lemmas: lemma1|lemma2, token_indices:[1,2,3]},  {lemmas: lemma1|lemma2, token_indices:[7,8,9]}]
+        # it is important to keep the above independently, so that the program in scholar can identify the start/end tokeni of each incidence. 
+        # in this case, it is start 1, end 3; and start 7, end 9
+        # if the two were merged, it'll be lemma1|lemma2, token_indices:[1,2,3, 7, 8, 9] -- now that it sounds the start is 1 and end is 9, which is wrong!
+        
+        ##########not used ##############################################
+        # phrases_dict = {} # like {(lemma1|lemma2): [token1, token2, ...]}
+        # for x in phrases_ls:
+        #     lemmas_key = x['lemmas'] # like lemma1|lemma2
+        #     token_indices = x['token_indices'] # like [1,2,3]
+        #     try:
+        #         phrases_dict[lemmas_key] += token_indices # if the key exists, concate the token_indices to the existing
+        #     except:
+        #         phrases_dict[lemmas_key] = token_indices
+        
+        # print(319, len(list(phrases_dict.keys())))
+
+        # # in the phrase_dict and for a particular lemmakey, the token_indices may repeat, the following is to make a unique list of token_indices
+        # for lemmas_key in list(phrases_dict.keys()):
+        #     token_indices_ls = phrases_dict[lemmas_key]
+        #     unique_tokens_ls = list(set(token_indices_ls))
+        #     unique_tokens_ls.sort()
+        #     phrases_dict[lemmas_key] = unique_tokens_ls
+
+        # # now convert the dict back to a list
+        # phrases_ls =[]
+        # for lemmas_key in list(phrases_dict.keys()):
+        #     token_indices_ls = phrases_dict[lemmas_key]
+        #     phrases_ls.append({"lemmas": lemmas_key, "token_indices": token_indices_ls})
+
+        ##########not used ##############################################
 
         # print(175, phrases_ls[0])
         # sort by the key lemmas
         phrases_ls =sorted(phrases_ls, key=lambda x: x['lemmas'])  #sorted(phrases_ls, key=lambda k: k['start'])  # do not sort, the key 'start' has been removed
 
-        # phrases_ls  is like [{lemma:"lemma1|lemma2", token_indices:[]}, {}]
-        # it is converted to like [["lemma", "token_indices"], [["lemma1|lemm2", [1,2,3], ["lemma1|lemm2", [1,2,3]]]
+        # phrases_ls  is like [{lemmas:"lemma1|lemma2", token_indices:[]}, {}]
+        # it is converted to like [["lemmas", "token_indices"], [["lemma1|lemm2", [1,2,3], ["lemma1|lemm2", [1,2,3]]]
         # i.e., the first element is for key names, the second for data, which is an array with each element as value of the corresponding keys
         # minify list of dicts
 
@@ -323,15 +359,15 @@ def get_processed_textjson(requestdatafromfrontend_json):
 
         # minify phrases_ls
         minify_phrases_ls = minify_list_of_dicts(phrases_ls)
-        # o_str = json.dumps(phrases_ls)
-        # print(315, 'original phrase_ls', len(o_str))
-        # m_str = json.dumps(minify_phrases_ls)
-        # print(317, 'minified phrase_ls', len(m_str))
+        o_str = json.dumps(phrases_ls)
+        print(315, 'original phrase_ls', len(o_str))
+        m_str = json.dumps(minify_phrases_ls) 
+        print(317, 'minified phrase_ls', len(m_str)) # was 212244 to 110375, now 121557 to 76928
         # it shows that the minfied is half the length of the original list!
 
         # minify sents_ls
         # it is like [[ {start:, end:, lemma:, ...} ], [...]]
-        print(322, sents_ls[0][0]) # the first token of the first sentence
+        # print(322, sents_ls[0][0]) # the first token of the first sentence
         # so this one is tricky...
         # it is not to minify the sentence, rather to minify each sentence
         # i.e, for one sent, it can be minified as [ [start, end, lemma],  [0, 10, this], ... ]
@@ -349,9 +385,9 @@ def get_processed_textjson(requestdatafromfrontend_json):
                 minify_tokens_thissent_ls[0].clear() # [] for the keys element for sent[1:]
             minify_sents_ls.append(minify_tokens_thissent_ls)
         o_str = json.dumps(sents_ls)
-        print(315, 'original sents_ls', len(o_str))
+        print(373, 'original sents_ls', len(o_str))
         m_str = json.dumps(minify_sents_ls)
-        print(317, 'minified sents_ls', len(m_str)) # 501644 if all sents has the keys elements (like start, end, lemma, etc), 484364 if only the first sent has keys elements
+        print(375, 'minified sents_ls', len(m_str)) # 501644 if all sents has the keys elements (like start, end, lemma, etc), 484364 if only the first sent has keys elements
     
         # Note: the word_lemmas_dict cannot be minified. 
         # a dictionary cannot be minified as it is already in the most reduced form
@@ -360,6 +396,8 @@ def get_processed_textjson(requestdatafromfrontend_json):
 
         # save everything to local
         # text, sent, tokens, phrases (entities, noun_chunks, verb_chunks)
+        # seems that it does not help much (after minifying, the treated json is that greatly smaller)
+
         processed_textjson ={
             "meta":{
                 "source": "",
@@ -368,13 +406,17 @@ def get_processed_textjson(requestdatafromfrontend_json):
             "data":{
                 "text":cleaned_text,
                 "article":article,
-                "entities": minify_entities_ls,
-                "sentences": minify_sents_ls,
-                "phrases": minify_phrases_ls,
+                "min_entities": minify_entities_ls,
+                "min_sentences": minify_sents_ls,
+                "min_phrases": minify_phrases_ls,
+                # "entities": entities_ls,
+                # "sentences": sents_ls,
+                # "phrases": phrases_ls,
                 "word_lemmas_dict":word_lemmas_dict
             }
         }
-
+        len_processed_textjsonstr = len(json.dumps(processed_textjson))
+        print(405, len_processed_textjsonstr)
         return processed_textjson
     ##################################################################### end of the module make_processed_text (a dict of text, sentences, etc)
 
@@ -389,11 +431,24 @@ def get_processed_textjson(requestdatafromfrontend_json):
         if end_ele > len(entities_ls)-1: # for the last cut, make end_ele as the index of the last element in textjson + 1
             end_ele = len(entities_ls)
         selected_entities = entities_ls[start_ele:end_ele]
-        print(379, "making processed_textjson", n, "of", n_selects, "============ entity", start_ele, "to", end_ele, "number of entities:", len(selected_entities))
+        print(379, "making processed_textjson", n, "of", n_selects, "============ entity", start_ele + 1, "to", end_ele, "number of entities:", len(selected_entities))
         processed_textjson = make_processed_textjson(selected_entities)
         targetjson.append(processed_textjson)
 
     responsedatafrombackend_json = {'responsedatafrombackend': targetjson}
+
+    try:
+        targetlocation
+        # the following is for testing model using local server only (the scholar project keep refreshing the webpage, sometimes causing file lost if not saved)
+        targetjsongzfile= '{}/min_{}_pytreated.json.gz'.format(targetlocation, article)
+        json_str = json.dumps(targetjson) # convert to string
+        json_bytes = json_str.encode('utf-8') # convert to bytes
+        with gzip.open(targetjsongzfile, 'w') as f:
+            f.write(json_bytes)
+    except:
+        pass
+
     return responsedatafrombackend_json
 
 ################################# def get_processed_textjson(requestdatafromfrontend_json)#########################################################
+
