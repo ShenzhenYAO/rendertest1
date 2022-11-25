@@ -84,9 +84,9 @@ def get_matched_spans(text="______", interested_phrases_ls=[], match_patterns_ls
     # print(85, 'patterns_ls', patterns_ls)
     # print(86, 'match_patterns_ls', match_patterns_ls)
     if len(match_patterns_ls) == 0:
-        matcher.add('customized_phrases', patterns_ls)
+        matcher.add('customized_phrases', patterns_ls, greedy='LONGEST')
     else:
-        matcher.add('customized_phrases', match_patterns_ls)
+        matcher.add('customized_phrases', match_patterns_ls, greedy='LONGEST')
     
     matched_spans_ls=[]    
     print('85, match patterns from doc ...')
