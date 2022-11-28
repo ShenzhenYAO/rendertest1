@@ -3,3 +3,5 @@ documentations/
 venv/
 __pycache__/
 testdata/
+
+additional_96x/data

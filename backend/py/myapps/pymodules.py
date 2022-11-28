@@ -156,6 +156,9 @@ def get_processed_textjson(requestdatafromfrontend_json):
                 like_word=1
                 if (token.like_num == True) | (token.is_currency == True) | (token.is_quote == True) | (token.is_bracket == True)| (token.is_space == True)| (token.is_punct == True)| (token.is_digit == True):
                     like_word = 0
+                chidreni_ls =[]
+                for x in token.children:
+                    chidreni_ls.append(x.i)
                 tmp_dict={
                     "lemma": token.lemma_.lower(),
                     "pos":token.pos_,
@@ -163,7 +166,8 @@ def get_processed_textjson(requestdatafromfrontend_json):
                     "tokeni": token.i,
                     "start": token.idx,
                     "end": token.idx + len(token.text_with_ws)-1,
-                    'like_word':like_word 
+                    'like_word':like_word,
+                    'children': chidreni_ls
                 }
                 tokens_ls.append(tmp_dict)            
             return tokens_ls
