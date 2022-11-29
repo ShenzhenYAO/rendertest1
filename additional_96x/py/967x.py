@@ -156,6 +156,10 @@ for x in sents_ls:
             if theme == 'others':
                 theme_cat = 'unclassifierd'
             # apeend to the new_sents_ls
+            if ('housing' in wrdcl.lower()) & (theme_cat == 'unclassifierd'):
+                print('what is going on!!!!!!!!!!!!!!!!!!!')
+                print(y)
+                x = z+1
             new_sents_ls.append({
                 'policy_prop':policy_prop,
                 'word_cloud_hit_sentence':word_cloud_hit_sentence,

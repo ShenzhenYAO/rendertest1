@@ -48,7 +48,7 @@ for x in selected_themes_ls:
 
 # read the bigtext gz
 def clean4_get_ents_ncs():
-    # labels_exclude_ls =['ORG', 'DATE', 'TIME', 'GPE', 'PERSON',  'EVENT',  'CARDINAL', 'LAW', 'LOC', 'WORK_OF_ART', 'ORDINAL', 'PERCENT', 'MONEY', 'NORP', 'QUANTITY', 'LANGUAGE']
+    labels_exclude_ls =['ORG', 'DATE', 'TIME', 'GPE', 'PERSON',  'EVENT',  'CARDINAL', 'LAW', 'LOC', 'WORK_OF_ART', 'ORDINAL', 'PERCENT', 'MONEY', 'NORP', 'QUANTITY', 'LANGUAGE']
     general_words_ls = []
 
     for nn in ["1", "2"]:
@@ -73,21 +73,29 @@ def clean4_get_ents_ncs():
         i=-1
         for x in ents_ncs_ls:
             i+=1
-            print (55, i, 'of', len(ents_ncs_ls))
+            print (55, i, 'of', len(ents_ncs_ls), len(new_ents_ncs_ls))
             text = x['text']
             doc = nlp(text)
             has_lemma_of_selected_theme=0
-            # exclude if having general words
+            # # exclude if having general words
             # for s in general_words_ls:
             #     if s in text.lower():
             #         has_lemma_of_selected_theme=1
             #         break
-            # for s in ['(', ')', 'p.o.box', 'https://', 're:', 'april', 'file', 'amend', 'appoint', 'authentication', 'certified', '', 'creek', 'foundation', 'further', 'garden', 'inc.', 'boulevard', 'breif', 'manager', 'census' ]:
-            #     if s in text.lower():
-            #         has_lemma_of_selected_theme=1
-            #         break
-            # if has_lemma_of_selected_theme == 1:
-            #     continue
+            for s in ['(', ')', 'p.o.box', 'https://', 're:', 
+                    'april', 'file', 
+                    'amend', 'appoint', 
+                    'authentication', 
+                    'certified',  'creek', 
+                    'foundation', 'further', 'garden', 
+                    'inc.', 'boulevard', 'breif', 'manager', 'census'
+
+                 ]:
+                if s in text.lower():
+                    has_lemma_of_selected_theme=1
+                    break
+            if has_lemma_of_selected_theme == 1:
+                continue
             # exclude if having road, street, avenue
             for s in ['road', 'street', 'avenue',  'drive', 'highway', 'facilities', 'creek', 'foundation', 'further', 'garden', 'inc.', 'crossing', 'a city', 'lake', 'canal', 'cheakamus', 'ava neve', 'quay', 'bay']:
                 if s in text.lower():
@@ -118,22 +126,22 @@ def clean4_get_ents_ncs():
                 if lemma in lemmas_selected_themes_ls:
                     has_lemma_of_selected_theme =1
                     break
-                # if ('hous' in text.lower()):
-                #     has_lemma_of_selected_theme =1
-                #     break
-                # if ('mental' in text.lower()):
-                #     has_lemma_of_selected_theme =1
-                #     break
-                # if ('youth' in text.lower()):
-                #     has_lemma_of_selected_theme =1
-                #     break
-                # if ('overdose' in text.lower()):
-                #     has_lemma_of_selected_theme =1
-                #     break
-            # for ent in doc.ents:
-            #     if ent.label_ in labels_exclude_ls:
-            #         has_lemma_of_selected_theme =1
-            #         break 
+                if ('hous' in text.lower()):
+                    has_lemma_of_selected_theme =1
+                    break
+                if ('mental' in text.lower()):
+                    has_lemma_of_selected_theme =1
+                    break
+                if ('youth' in text.lower()):
+                    has_lemma_of_selected_theme =1
+                    break
+                if ('overdose' in text.lower()):
+                    has_lemma_of_selected_theme =1
+                    break
+            for ent in doc.ents:
+                if ent.label_ in labels_exclude_ls:
+                    has_lemma_of_selected_theme =1
+                    break 
             if has_lemma_of_selected_theme == 0:
                 new_ents_ncs_ls.append(x)
 

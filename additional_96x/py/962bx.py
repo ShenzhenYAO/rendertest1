@@ -38,7 +38,7 @@ def clean2_get_ents_ncs():
             # text = re.sub(r'[~`%^*()_-+={}\[\]\|\\:\'\"\<\>,.;@#?!&$/]+', '', text).strip() # remove digits
             # text = re.sub(r'[^\w]', '', text).strip() # remove digits
             if(len(text)>0) & (len(x['text']) > 1) & ( x['text'] !=x['text'].upper() ) & ('council' not in x['text'].lower()) &  ('bylaw' not in x['text'].lower()) & ('carr' not in x['text'].lower()):
-                print(x['text'])
+                # print(x['text'])
                 new_ents_ncs_ls.append(x)
 
         # print(len(ents_ncs_ls), len(new_ents_ncs_ls))

@@ -46,7 +46,7 @@ for nn in ["1", "2"]:
     sents_index_phrases_ls =[]
 
     # load the ent nc list, like {start: end: label}
-    location = cwd + tmpoutdir+ '/entities_cleaned4_nounchunks_bigtext_{}.json.gz'.format(nn)
+    location = cwd + tmpoutdir+ '/entities_cleaned5_nounchunks_bigtext_{}.json.gz'.format(nn)
     # print(corpusfilepath)
     with gzip.open(location, 'r') as fin:        
         json_bytes = fin.read()      
@@ -161,7 +161,7 @@ for nn in ["1", "2"]:
     jsonobj = {
         'sources': [
             cwd + '/pyflaskapps/data/output/new_policyanalysis/04a_corpus/bigtext_and_sents_pos_in_bigtext_{}.json.gz'.format(nn), 
-            cwd + '/pyflaskapps/data/output/new_policyanalysis/04a_corpus/entities_cleaned4_nounchunks_bigtext_{}.json.gz'.format(nn)
+            cwd + '/pyflaskapps/data/output/new_policyanalysis/04a_corpus/entities_cleaned5_nounchunks_bigtext_{}.json.gz'.format(nn)
         ],
         'program': r'C:\Users\syao2\AppData\Local\MyWorks\js\ml_text\python\pyflaskapps\example15_spacytests\pymodules\spacy\tests\test964.py',
         'data': {"bigtext": bigtext, "sents_pos": new_sents_pos_ls}

@@ -141,8 +141,8 @@ for x in sents_all_with_entsncs_ls:
             matched_phrases_ls.append(thistext)
             x['new_phrase_themes'].append({"phrase":thistext, "themes":['others']})
 
-    if key2 == "37712":
-        print (x)
+    # if key2 == "37712":
+    #     print (x)
 
 # now sents_all_with_entsncs_ls includes matched_phrases_themes
 jsonobj = {

@@ -173,7 +173,7 @@ def bigtext_get_otherphrases():
         for x in matched_spans_ls:
             # print(172, len(list(x)))
             start = x[0].idx
-            end = x[len(list(x))-1].idx + len(x.text_with_ws) -1
+            end = start + len(x.text_with_ws) -1
             text = x.text_with_ws
             tmpdict = {
                 "start": start,

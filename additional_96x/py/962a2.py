@@ -37,6 +37,24 @@ def bigtext_get_ents_ncs():
 
         phrases_otherthemes_ls = srcjson2['data']
 
+        # the end position in phrases_otherthemes_ls is WRONG!!!
+        gzlocation = cwd + tmpoutdir + 'bigtext_and_sents_pos_in_bigtext_{}.json.gz'.format(nn)
+        # print(corpusfilepath)
+        with gzip.open(gzlocation, 'r') as fin:        
+            json_bytes = fin.read()      
+        # convert bytes to string
+        json_str = json_bytes.decode('utf-8')  
+        # convert string to json  
+        srcjson = json.loads(json_str)   #like {text: '...', meta: {subsection: ..., }}
+        bigtext = srcjson['data']['bigtext']
+        # print(len(bigtext))
+        for x in phrases_otherthemes_ls:
+            start = x['start']
+            end2= start + len(x['text']) -1
+            x['end']=end2
+            # x['text2'] = bigtext[start:end2+1]
+
+
         print(len(phrases_otherthemes_ls), phrases_otherthemes_ls[0])
 
         # merge the two
