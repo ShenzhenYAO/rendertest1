@@ -117,7 +117,7 @@ save:
 cwd + "/pyflaskapps/data/output/new_policyanalysis/23_tableau/themesdata_allcities_auto.xlsx"
 
 
-test 957: --- make a map for future dates related stuff: matched_futuredates_auto.xlsx 
+test 957: --- make a map for future dates related stuff: matched_futuredates_auto.xlsx -- the target xlsx not used!
 save:
 cwd + "/pyflaskapps/data/output/new_policyanalysis/23_tableau/matched_futuredates_auto.xlsx"
 
@@ -126,7 +126,7 @@ test 959: --- for checking ...
 nothing to save
 
 
-test 961: make big text and delimite text by sents
+test 961: make big text and delimite text by sents  --- take about 5 minutes to run
 
 src:
 cwd + '/pyflaskapps/data/output/new_policyanalysis/04a_corpus/corpus_withfuture_action_dates.bin.gz',
