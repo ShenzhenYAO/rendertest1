@@ -3,9 +3,9 @@ def get_matched_spans(text="______", interested_phrases_ls=[], match_patterns_ls
 
     import spacy
     from spacy.matcher import Matcher
-    print('Loading en_core_web_lg, in get_matched_spans() ============ =====================')
-    nlp = spacy.load("en_core_web_lg")
-    print('Loading en_core_web_lg done ============ =====================')
+    print('Loading en_core_web_sm, in get_matched_spans() ============ =====================')
+    nlp = spacy.load("en_core_web_sm")
+    print('Loading en_core_web_sm done ============ =====================')
     if len(str(max_text_length))>0:
         nlp.max_length = max_text_length
 
@@ -26,7 +26,7 @@ def get_matched_spans(text="______", interested_phrases_ls=[], match_patterns_ls
     
     patterns_ls=[]
     if (len(match_patterns_ls) == 0):
-        print('30, make patterns ...loop for number of patterns: ', len(interested_phrases_ls))
+        print('30, make patterns ... loop for number of patterns: ', len(interested_phrases_ls))
         for phrase in interested_phrases_ls:
             phrasedoc = nlp(phrase)
             # ignore the single words
@@ -93,7 +93,7 @@ def get_matched_spans(text="______", interested_phrases_ls=[], match_patterns_ls
     matches = matcher(textdoc)
     for match_id, start, end in matches:
         matched_span = textdoc[start:end]
-        # print(matched_span.text)
+        # print(96, matched_span.text)
         matched_spans_ls.append(matched_span)
     print('91, return  matched_spans_ls ===', len(matched_spans_ls))
     return matched_spans_ls

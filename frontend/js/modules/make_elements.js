@@ -2,8 +2,8 @@ async function makeEle() {
 
     // append a div for data (this one is to be hidden...)
     let datadiv = d3.select('body').append('div')
-        .attrs({'id': 'metadatadiv'})
-        .styles({'display':'none'})
+        .attrs({ 'id': 'metadatadiv' })
+        .styles({ 'display': 'none' })
 
     // add a nav bar
     let navbar_d3pn = d3.select('body').append('div')
@@ -35,12 +35,22 @@ async function makeEle() {
         .text('Harm reduction')
     // add button divs
     navbar_d3pn.append('div')
+        .attrs({ 'id': 'maketestpagebutton2' })
+        .styles({ 'float': 'left', 'color': 'lightgrey', 'text-align': 'center', 'width': '60px', 'font-family': 'arial', 'font-weight': 'bold', 'font-size': '12px', 'vertical-align': 'middle', 'border': '0px grey solid', 'cursor': 'pointer' })
+        .text('demo')
+        .on('click', async () => { await make_vchdemo_page() })
+        .on('mouseover', (event) => { d3.select(event.target).styles({ 'color': 'white' }) })
+        .on('mouseleave', (event) => { d3.select(event.target).styles({ 'color': 'lightgrey' }) })
+
+
+    navbar_d3pn.append('div')
         .attrs({ 'id': 'maketestpagebutton' })
         .styles({ 'float': 'left', 'color': 'lightgrey', 'text-align': 'center', 'width': '60px', 'font-family': 'arial', 'font-weight': 'bold', 'font-size': '12px', 'vertical-align': 'middle', 'border': '0px grey solid', 'cursor': 'pointer' })
         .text('test')
         .on('click', async () => { await make_test_page() })
         .on('mouseover', (event) => { d3.select(event.target).styles({ 'color': 'white' }) })
         .on('mouseleave', (event) => { d3.select(event.target).styles({ 'color': 'lightgrey' }) })
+
 
 
     d3.select('body').append('div')

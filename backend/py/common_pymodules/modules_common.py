@@ -25,7 +25,8 @@ def clean_text_rendertest1(text):
         textacy.preprocessing.normalize.hyphenated_words, # remove hyphens split the word into segments different lines like Shakes- peare without affecting the hyphens in a normal setting like semi_conductor
     )
     cleanedtext = preproc(text)
-    cleanedtext = textacy.preprocessing.normalize.repeating_chars(cleanedtext, chars="*")
+    cleanedtext = textacy.preprocessing.normalize.repeating_chars(cleanedtext, chars="*", maxn=0)
+    cleanedtext = textacy.preprocessing.normalize.repeating_chars(cleanedtext, chars=",")
     cleanedtext = textacy.preprocessing.normalize.repeating_chars(cleanedtext, chars=".")
     cleanedtext = textacy.preprocessing.normalize.repeating_chars(cleanedtext, chars="\n")
     cleanedtext = textacy.preprocessing.replace.emails(cleanedtext, repl="")
