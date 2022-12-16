@@ -289,22 +289,24 @@ async function task_clean() {
     stage_d3pn.append('label').attrs({ 'class': 'demotask' }).styles({ 'class': 'demotask', 'font-weight': 'bold' }).text('Input')
     stage_d3pn.append('p').attrs({ 'class': 'demotask' })
     stage_d3pn.append('div').attrs({ 'id': 'input', 'class': 'demotask', 'contenteditable': 'true' })
-        .styles({ 'display': 'none', 'border': "0px solid grey", 'width': '90%', 'max-height': '200px', 
-        'overflow': 'auto', 'padding': '5px', 'font-size': '16px', 'font-family': 'Arial' , 'line-height':'1.5'})
+        .styles({
+            'display': 'none', 'border': "0px solid grey", 'width': '90%', 'max-height': '200px',
+            'overflow': 'auto', 'padding': '5px', 'font-size': '16px', 'font-family': 'Arial', 'line-height': '1.5'
+        })
     stage_d3pn.append('p').attrs({ 'class': 'demotask' })
 
     stage_d3pn.append('label').attrs({ 'class': 'demotask' }).styles({ 'margin-top': '50px', 'font-weight': 'bold' }).text('Output')
     stage_d3pn.append('button').attrs({ 'class': 'demotask' }).text('Go').styles({ 'margin-left': '10px', 'margin-left': '10px' })
-    .on('click', async (event) => { await get_cleaned_text() })
+        .on('click', async (event) => { await get_cleaned_text() })
     stage_d3pn.append('p').attrs({ 'class': 'demotask' })
     stage_d3pn.append('div').attrs({ 'id': 'output', 'class': 'demotask', 'contenteditable': 'false' })
-        .styles({ 'display': 'none', 'border': "1px solid lightgrey", 'max-height': '300px', 'overflow': 'auto', 'padding': '5px', 'line-height':'1.5', 'width':'90%' })
+        .styles({ 'display': 'none', 'border': "1px solid lightgrey", 'max-height': '300px', 'overflow': 'auto', 'padding': '5px', 'line-height': '1.5', 'width': '90%' })
     stage_d3pn.append('p').attrs({ 'class': 'demotask' })
 
     stage_d3pn.append('label').attrs({ 'class': 'demotask', 'id': 'code' }).styles({ 'margin-top': '50px', 'class': 'demotask', 'font-weight': 'bold' }).text('')
     stage_d3pn.append('p').attrs({ 'class': 'demotask' })
     stage_d3pn.append('div').attrs({ 'id': 'codebox', 'class': 'demotask', 'contenteditable': 'false' })
-    .styles({ 'resize':'both','width': '80%', 'display': 'none', 'border': "1px solid grey",  'overflow': 'auto', 'padding': '5px' })
+        .styles({ 'resize': 'both', 'width': '80%', 'display': 'none', 'border': "0px solid grey", 'overflow': 'auto', 'padding': '5px', 'background-color': 'black' })
 
 
     let text = `Almost 7,000 British Columbians \u2022 \u0027 have died from the Province ʼs poisoned,,,,    unre-\ngulated drug supply since the overdose public health emergency was declared on April 14, 2016. 
@@ -321,7 +323,7 @@ async function task_clean() {
                       In July 2019, Vancouver City Council approved the Safe Supply Statement, created in collaboration with the Vancouver Community Action Team, whereby the City will share with other government partners, including the Government of Canada, and advocate for access to a safe,   regu-\nlated drug supply. *********************************************
     
     `
-    
+
     let inputbox = d3.select('div#input')
     inputbox.text(text).styles({ 'display': 'block' })
 
@@ -392,11 +394,11 @@ async function show_cleaned_text(responsedata) {
     let outbox_d3pn = d3.select('div#output').styles({ 'display': 'block', 'border': '1px solid grey' })
     let cleaned_text = responsedata['cleaned_text']
     outbox_d3pn.text(cleaned_text)
-    
+
     // display code in the box
     d3.select('label#code').text('Python code:')
     let codebox_d3pn = d3.select('div#codebox').styles({ "display": "block" })
-    let codestr = `<pre><code class="language-html">def clean_text_rendertest1(text):
+    let codestr = `<pre><code class="python">def clean_text_rendertest1(text):
     import textacy.preprocessing 
     preproc = textacy.preprocessing.make_pipeline(
         textacy.preprocessing.normalize.unicode, # does not seem to work, cannot remove é \t \u2022 \u0027 ...
@@ -423,7 +425,7 @@ async function show_cleaned_text(responsedata) {
     </code></pre>
     `
     codebox_d3pn.html(codestr)
-    codebox_d3pn.styles({ 'background-color': 'lightgrey' })
+    hljs.initHighlightingOnLoad();
 
 }
 
@@ -469,7 +471,7 @@ async function task_phrase() {
     stage_d3pn.append('label').attrs({ 'class': 'demotask', 'id': 'code' }).styles({ 'margin-top': '50px', 'class': 'demotask', 'font-weight': 'bold' }).text('')
     stage_d3pn.append('p').attrs({ 'class': 'demotask' })
     stage_d3pn.append('div').attrs({ 'id': 'codebox', 'class': 'demotask', 'contenteditable': 'false' })
-    .styles({ 'resize':'both', 'width': '80%', 'display': 'none', 'border': "1px solid grey",  'overflow': 'auto', 'padding': '5px' })
+        .styles({ 'resize': 'both', 'width': '80%', 'display': 'none', 'border': "1px solid grey", 'overflow': 'auto', 'padding': '5px' })
 
     let text = `Almost 7,000 British Columbians have died from the Province's poisoned, unregulated drug supply since the overdose public health emergency was declared on April 14, 2016. Moreover, subsequent to the declaration of the COVID-19 public health emergency on March 17, 2020, the rate of overdose events and illicit drug toxicity deaths have increased and surpassed historic highs. The City of Vancouver has likewise signalled a state of emergency with respect to the unregulated, contaminated drug supply and the associated opioid-related overdose deaths. In July 2019, Vancouver City Council approved the Safe Supply Statement, created in collaboration with the Vancouver Community Action Team, whereby the City will share with other government partners, including the Government of Canada, and advocate for access to a safe, regulated drug supply.`
     let inputbox = d3.select('div#input')
@@ -479,7 +481,7 @@ async function task_phrase() {
 
 async function get_phrase() {
 
-    let phrases_arr = d3.select('div#keywords').text().split('|').map(x=>x.trim()).filter(x=>x.length>0)
+    let phrases_arr = d3.select('div#keywords').text().split('|').map(x => x.trim()).filter(x => x.length > 0)
 
     // get the text in the text box
     let text = d3.select('div#input').node().textContent.trim()
@@ -540,24 +542,24 @@ function show_phrase(responsedata) {
     // get the tokens
     let tokens_arr = responsedata['tokens']
     let phrases_arr = responsedata['phrases']
-    
+
     // get list of tokens in phrases
-    let tokens_in_phrase_arr=[]
-    phrases_arr.forEach(d=>{
-        for (let j =d.starttokenid; j < d.endtokenid ; j++  ){
+    let tokens_in_phrase_arr = []
+    phrases_arr.forEach(d => {
+        for (let j = d.starttokenid; j < d.endtokenid; j++) {
             tokens_in_phrase_arr.push(j)
         }
     })
 
     // make new html to be displayed in the input box
-    
-    let newtext_tokens_arr=[]
-    let newhtml=""
-    tokens_arr.forEach(t=>{
+
+    let newtext_tokens_arr = []
+    let newhtml = ""
+    tokens_arr.forEach(t => {
         // console.log(t.text)
         let newtokentext = t.text
 
-        if (tokens_in_phrase_arr.includes(t.tokeni)){
+        if (tokens_in_phrase_arr.includes(t.tokeni)) {
             newtokentext = `<b>${t.text}</b>`
         }
         newtext_tokens_arr.push(newtokentext)
@@ -590,7 +592,7 @@ function show_phrase(responsedata) {
     // display code in the box
     d3.select('label#code').text('Python code:')
     let codebox_d3pn = d3.select('div#codebox').styles({ "display": "block" })
-    let codestr = `<pre><code class="language-html">def get_matched_phrases(requestdatafromfrontend_json):
+    let codestr = `<pre><code class="python">def get_matched_phrases(requestdatafromfrontend_json):
     text = requestdatafromfrontend_json['requestdatafromfrontend']['data']
     phrases_to_match_ls = requestdatafromfrontend_json['requestdatafromfrontend']['phrases']
     print(phrases_to_match_ls, text)
@@ -621,7 +623,7 @@ function show_phrase(responsedata) {
     </code></pre>
     `
     codebox_d3pn.html(codestr)
-    codebox_d3pn.styles({ 'background-color': 'lightgrey' })
+    hljs.initHighlightingOnLoad();
 }
 
 
@@ -653,7 +655,7 @@ async function task_ent() {
     stage_d3pn.append('label').attrs({ 'class': 'demotask', 'id': 'code' }).styles({ 'margin-top': '50px', 'class': 'demotask', 'font-weight': 'bold' }).text('')
     stage_d3pn.append('p').attrs({ 'class': 'demotask' })
     stage_d3pn.append('div').attrs({ 'id': 'codebox', 'class': 'demotask', 'contenteditable': 'false' })
-        .styles({ 'resize':'both','width': '80%', 'display': 'none', 'border': "1px solid grey",  'overflow': 'auto', 'padding': '5px' })
+        .styles({ 'resize': 'both', 'width': '80%', 'display': 'none', 'border': "0px solid grey", 'overflow': 'auto', 'padding': '5px' ,'background-color':'black'})
 
 
     let text = `The City of Vancouver has likewise signalled a state of emergency with respect to the unregulated, contaminated drug supply and the associated opioid-related overdose deaths.`
@@ -742,7 +744,7 @@ function show_ent_nc(responsedata) {
     // display code in the box
     d3.select('label#code').text('Python code:')
     let codebox_d3pn = d3.select('div#codebox').styles({ "display": "block" })
-    let codestr = `<pre><code class="language-html">def get_ent_nc(requestdatafromfrontend_json):
+    let codestr = `<pre><code class="python">def get_ent_nc(requestdatafromfrontend_json):
     text = requestdatafromfrontend_json['requestdatafromfrontend']['data']
     print(text)
     results_ls=[]
@@ -761,7 +763,8 @@ function show_ent_nc(responsedata) {
     </code></pre>
     `
     codebox_d3pn.html(codestr)
-    codebox_d3pn.styles({ 'background-color': 'lightgrey' })
+    hljs.initHighlightingOnLoad();
+
 }
 /////task entities and noun chuncks
 
@@ -790,7 +793,7 @@ async function task_token() {
     stage_d3pn.append('label').attrs({ 'class': 'demotask', 'id': 'code' }).styles({ 'margin-top': '50px', 'class': 'demotask', 'font-weight': 'bold' }).text('')
     stage_d3pn.append('p').attrs({ 'class': 'demotask' })
     stage_d3pn.append('div').attrs({ 'id': 'codebox', 'class': 'demotask', 'contenteditable': 'false' })
-    .styles({ 'resize':'both','width': '80%', 'display': 'none', 'border': "1px solid grey",  'overflow': 'auto', 'padding': '5px' })
+        .styles({ 'resize': 'both', 'width': '80%', 'display': 'none', 'border': "0px solid grey", 'overflow': 'auto', 'padding': '5px','background-color':'black' })
 
 
     let text = `The City of Vancouver has likewise signalled a state of emergency with respect to the unregulated, contaminated drug supply and the associated opioid-related overdose deaths.`
@@ -890,7 +893,7 @@ async function show_tokenized(responsedata) {
     // display code in the box
     d3.select('label#code').text('Python code:')
     let codebox_d3pn = d3.select('div#codebox').styles({ "display": "block" })
-    let codestr = `<pre><code class="language-html">def get_tokenized_data(requestdatafromfrontend_json):
+    let codestr = `<pre><code class="python">def get_tokenized_data(requestdatafromfrontend_json):
     text = requestdatafromfrontend_json['requestdatafromfrontend']['data']
     print(text)
     results_dict={}
@@ -911,7 +914,8 @@ async function show_tokenized(responsedata) {
     return responsedatafrombackend_json</code></pre>
     `
     codebox_d3pn.html(codestr)
-    codebox_d3pn.styles({ 'background-color': 'lightgrey' })
+    // codebox_d3pn.styles({ 'background-color': 'lightgrey' })
+    hljs.initHighlightingOnLoad();
 
 }
 
